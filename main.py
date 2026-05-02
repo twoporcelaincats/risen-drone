@@ -885,7 +885,7 @@ async def on_message(message):
 
         #     view.data[0] = user_climbs
         #     if total_climbs == 0:
-        #         view.footers[0] = "Type 'bd link' to link your account and start tracking your climbs!"
+        #         view.footers[0] = "Type '/link' to link your account and start tracking your climbs!"
         #     else:
         #         view.footers[0] = f"{total_climbs} climbs in total!"
 
@@ -1181,7 +1181,7 @@ async def on_message(message):
 
         #         #Is user linked?
         #         if len(user_stats) == 0:
-        #            await SEND(ch, "You need to be linked with BD and have 50 climbs minimum in the game, to morph into a Janitor. Use `bd link` to link your account.")
+        #            await SEND(ch, "You need to be linked with BD and have 50 climbs minimum in the game, to morph into a Janitor. Use `/link` to link your account.")
         #            return
 
         #         # Count total climbs
