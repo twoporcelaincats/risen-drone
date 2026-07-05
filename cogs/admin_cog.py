@@ -418,12 +418,19 @@ class AdminCog(commands.Cog):
                         f"Correct: {parts[1]} | A2: {parts[2]} | A3: {parts[3]} | A4: {parts[4]}\n"
                         f"Good: {parts[5]} | Bad: {parts[6]}\n"
                     )
-                text = "\n".join(response_lines)
-                if len(text) <= 2000:
-                    await FOLLOWUP(text, interaction)
-                else:
-                    await FOLLOWUP("The list is too long. Sending first 2000 characters:", interaction)
-                    await FOLLOWUP(text[:2000], interaction)
+
+                current_message = ""
+                for line in response_lines:
+                    if len(current_message) + len(line) + 1 > 2000:
+                        if current_message:
+                            await FOLLOWUP(current_message.strip(), interaction)
+                            await asyncio.sleep(1)
+                        current_message = line + "\n"
+                    else:
+                        current_message += line + "\n"
+                
+                if current_message:
+                    await FOLLOWUP(current_message.strip(), interaction)
 
             elif type == "delete":
                 if index is None:
