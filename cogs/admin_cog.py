@@ -382,7 +382,7 @@ class AdminCog(commands.Cog):
 
         try:
             if type == "amount":
-                await FOLLOWUP(f"There are {get_amount_of_entries("quiz")} questions in the database.", interaction)
+                await FOLLOWUP(f"There are {get_amount_of_entries('quiz')} questions in the database.", interaction)
 
             elif type == "print":
                 if index is None:
