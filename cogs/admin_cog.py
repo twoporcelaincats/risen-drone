@@ -1,7 +1,7 @@
 import asyncio
 import time
 
-from database import add_egg_with_check, add_entry, check_key, delete_entry, delete_key, get_value, list_decoded_entries
+from database import add_egg_with_check, add_entry, check_key, delete_entry, delete_key, get_value, list_decoded_entries, get_amount_of_entries, show_specific_entry
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -332,4 +332,106 @@ class AdminCog(commands.Cog):
             await SEND(CHANNELS[channel], txt)
         except Exception as exc:
             await FOLLOWUP(f"Something went wrong with `/makesay`: {exc}", interaction)
+            raise
+
+    @discord.app_commands.command(name="quiz_new", description="Add quiz question to the database.")
+    async def quiz_new(
+        self, interaction: discord.Interaction, 
+        question: str, 
+        correct_answer: str, 
+        answer2: str, 
+        answer3: str, 
+        answer4: str, 
+        good_response: str, 
+        bad_response: str
+    ):
+        stopMsg = command_check(interaction, True)
+        if stopMsg:
+            await INTERACTION(interaction, stopMsg, True)
+            return
+
+        await DEFER(interaction)
+
+        try:
+            data = "|".join([question, correct_answer, answer2, answer3, answer4, good_response, bad_response])
+            add_entry("quiz", data)
+            await FOLLOWUP("Successfully added new quiz question.", interaction)
+        except Exception as exc:
+            await FOLLOWUP(f"Something went wrong with `/quiz new`: {exc}", interaction)
+            raise
+
+    @discord.app_commands.command(name="quiz_manage", description="Manage quiz questions")
+    @discord.app_commands.choices(type=[
+        discord.app_commands.Choice(name="Amount", value="amount"),
+        discord.app_commands.Choice(name="Print", value="print"),
+        discord.app_commands.Choice(name="List", value="list"),
+        discord.app_commands.Choice(name="Delete", value="delete"),
+    ])
+    async def quiz_manage(
+        self,
+        interaction: discord.Interaction,
+        type: str,
+        index: int = None
+    ):
+        stopMsg = command_check(interaction, True)
+        if stopMsg:
+            await INTERACTION(interaction, stopMsg, True)
+            return
+
+        await DEFER(interaction)
+
+        try:
+            if type == "amount":
+                await FOLLOWUP(f"There are {get_amount_of_entries("quiz")} questions in the database.", interaction)
+
+            elif type == "print":
+                if index is None:
+                    await FOLLOWUP("You must provide an index for the `print` type.", interaction)
+                    return
+                question = show_specific_entry("quiz", index)
+                q_split = question.split("|")
+                to_send = (
+                    f"Q:\n{q_split[0]}\n"
+                    f"Correct Answer:\n{q_split[1]}\n"
+                    f"A2:\n{q_split[2]}\n"
+                    f"A3:\n{q_split[3]}\n"
+                    f"A4:\n{q_split[4]}\n"
+                    f"Good response:\n{q_split[5]}\n"
+                    f"Bad response:\n{q_split[6]}"
+                )
+                await FOLLOWUP(to_send, interaction)
+
+            elif type == "list":
+                entries = list_decoded_entries("quiz")
+                if not entries:
+                    await FOLLOWUP("No quiz questions found.", interaction)
+                    return
+
+                response_lines = []
+                for i, entry in enumerate(entries):
+                    parts = entry.split("|")
+                    if len(parts) != 7:
+                        continue
+                    response_lines.append(
+                        f"**Question {i}:**\n"
+                        f"Q: {parts[0]}\n"
+                        f"Correct: {parts[1]} | A2: {parts[2]} | A3: {parts[3]} | A4: {parts[4]}\n"
+                        f"Good: {parts[5]} | Bad: {parts[6]}\n"
+                    )
+                text = "\n".join(response_lines)
+                if len(text) <= 2000:
+                    await FOLLOWUP(text, interaction)
+                else:
+                    await FOLLOWUP("The list is too long. Sending first 2000 characters:", interaction)
+                    await FOLLOWUP(text[:2000], interaction)
+
+            elif type == "delete":
+                if index is None:
+                    await FOLLOWUP("You must provide an index for the `delete` type.", interaction)
+                    return
+                delete_entry("quiz", index)
+                await FOLLOWUP(f"Question at index {index} has been deleted.", interaction)
+
+        except Exception as exc:
+            await FOLLOWUP(f"Something went wrong with `/quiz manage`: {exc}", interaction)
             raise

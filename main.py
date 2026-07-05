@@ -2112,32 +2112,32 @@ async def on_message(message):
 
         #length may vary... for this one
         #quiz
-        if lmsg.startswith("quiz", 1):
-            if lmsgsplit[1] == "new":
-                qSplit = msgsplit[2].split("|")
-                if len(qSplit) != 7:
-                    await SEND(ch,"Question does not have the required 7 sections.")
-                else:
-                    add_entry("quiz", msgsplit[2])
-                    await SEND(ch, "Successfully added new quiz question")
+        # if lmsg.startswith("quiz", 1):
+        #     if lmsgsplit[1] == "new":
+        #         qSplit = msgsplit[2].split("|")
+        #         if len(qSplit) != 7:
+        #             await SEND(ch,"Question does not have the required 7 sections.")
+        #         else:
+        #             add_entry("quiz", msgsplit[2])
+        #             await SEND(ch, "Successfully added new quiz question")
 
-            elif lmsgsplit[1] == "amount":
-                await SEND(ch,"There are " + str(get_amount_of_entries("quiz")) + " questions in the database.")        
+        #     elif lmsgsplit[1] == "amount":
+        #         await SEND(ch,"There are " + str(get_amount_of_entries("quiz")) + " questions in the database.")        
 
-            elif lmsgsplit[1] == "print":
-                question = show_specific_entry("quiz",int(msgsplit[2]))
-                qSplit = question.split("|")
-                toSend = "Q:\n" + qSplit[0] + "\nCorrect Answer:\n" + qSplit[1]
-                toSend += "\nA2:\n" + qSplit[2] + "\nA3:\n" + qSplit[3] + "\nA4:\n" + qSplit[4]
-                toSend += "\nGood response:\n" + qSplit[5] + "\nBad response:\n" + qSplit[6]
-                await SEND(ch,toSend)
-            elif lmsgsplit[1] == 'list':
-                await PRINT_QUESTIONS(ch)
-            elif lmsgsplit[1] == "delete":
-                delete_entry("quiz", int(msgsplit[2]))
-                await SEND(ch,"Question at index " + msgsplit[2] + " has been deleted." )
+        #     elif lmsgsplit[1] == "print":
+        #         question = show_specific_entry("quiz",int(msgsplit[2]))
+        #         qSplit = question.split("|")
+        #         toSend = "Q:\n" + qSplit[0] + "\nCorrect Answer:\n" + qSplit[1]
+        #         toSend += "\nA2:\n" + qSplit[2] + "\nA3:\n" + qSplit[3] + "\nA4:\n" + qSplit[4]
+        #         toSend += "\nGood response:\n" + qSplit[5] + "\nBad response:\n" + qSplit[6]
+        #         await SEND(ch,toSend)
+        #     elif lmsgsplit[1] == 'list':
+        #         await PRINT_QUESTIONS(ch)
+        #     elif lmsgsplit[1] == "delete":
+        #         delete_entry("quiz", int(msgsplit[2]))
+        #         await SEND(ch,"Question at index " + msgsplit[2] + " has been deleted." )
 
-            return
+        #     return
 
         #and if none of the others match go here...
         if lmsg.startswith("triv", 2) or lmsg.startswith("tip", 2):
