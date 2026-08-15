@@ -250,6 +250,9 @@ async def on_message(message):
         await DRONEPRINT(f"Left unauthorized Server (Message Trigger): {message.guild.name} ({message.guild.id}).")
         return
 
+    if message.channel.id == 1538275973848502455:
+    return
+    
     msg = message.content
     ## lowercase the message for some commands to use
     lmsg = msg.lower()
