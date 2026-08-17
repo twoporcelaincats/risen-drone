@@ -251,7 +251,7 @@ async def on_message(message):
         return
 
     if message.channel.id == 1538275973848502455:
-    return
+        return
     
     msg = message.content
     ## lowercase the message for some commands to use
